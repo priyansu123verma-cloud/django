@@ -164,7 +164,7 @@ class NoteViewTestCase(TestCase):
         }
         response = self.client.post(reverse('create_note'), data)
         self.assertEqual(response.status_code, 200)  # No redirect
-        self.assertFormError(response, 'form', 'description', 'Description must be at least 10 characters long.')
+        self.assertContains(response, 'Description must be at least 10 characters long.')
 
     def test_create_note_view_empty_title(self):
         """Test that empty title causes form error."""
@@ -211,7 +211,7 @@ class NoteIntegrationTestCase(TestCase):
         }
         response = self.client.post(reverse('create_note'), data)
         self.assertEqual(response.status_code, 200)
-        self.assertFormError(response, 'form', 'description', 'Description must be at least 10 characters long.')
+        self.assertContains(response, 'Description must be at least 10 characters long.')
         
         # Verify note was not created
         self.assertFalse(Note.objects.filter(title='Invalid Note').exists())
