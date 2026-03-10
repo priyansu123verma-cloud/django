@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Note{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Create a New Note</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" id="noteForm">
+                    {% csrf_token %}
+                    
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label for="{{ form.title.id_for_label }}" class="form-label">Title</label>
+                        {{ form.title }}
+                        {% if form.title.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.title.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">Description (minimum 10 characters)</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <div class="invalid-feedback d-block" id="descriptionError">
+                                {{ form.description.errors }}
+                            </div>
+                        {% endif %}
+                        <small class="form-text text-muted">Description must be at least 10 characters long.</small>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Create Note</button>
+                        <a href="{% url 'note_list' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Client-side validation feedback
+    document.getElementById('noteForm').addEventListener('submit', function(e) {
+        const description = document.getElementById('id_description').value;
+        if (description.length < 10) {
+            e.preventDefault();
+            const errorDiv = document.getElementById('descriptionError');
+            if (!errorDiv) {
+                const newError = document.createElement('div');
+                newError.className = 'invalid-feedback d-block';
+                newError.id = 'descriptionError';
+                newError.textContent = 'Description must be at least 10 characters long.';
+                document.getElementById('id_description').parentNode.appendChild(newError);
+            }
+        }
+    });
+</script>
+{% endblock %}
